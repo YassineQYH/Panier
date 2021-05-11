@@ -1,19 +1,157 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        {# Run `composer require symfony/webpack-encore-bundle`
-           and uncomment the following Encore helpers to start using Symfony UX #}
-        {% block stylesheets %}
-            {#{{ encore_entry_link_tags('app') }}#}
-        {% endblock %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="La Boutique E-Commerce">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Jekyll v4.1.1">
+    <title>{% block title %}La Boutique E-Commerce{% endblock %}</title>
 
-        {% block javascripts %}
-            {#{{ encore_entry_script_tags('app') }}#}
-        {% endblock %}
-    </head>
-    <body>
-        {% block body %}{% endblock %}
-    </body>
+        <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+        {# <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> #}
+        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
+
+        <script src="https://kit.fontawesome.com/c8e4d183c2.js" crossorigin="anonymous"></script> {# using-FontAwesome-for-Icons #}
+
+
+    <!-- Bootstrap core CSS -->
+    <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet"> {# {{ asset ('') }} => veut dire : va me chercher dans le dossier public #}
+    <link rel="stylesheet" href="{{ asset('assets/css/e-commerce.css') }}">
+    {% block javascript %}
+    {% endblock %}
+    <style>
+        .bd-placeholder-img {
+            font-size: 1.125rem;
+            text-anchor: middle;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+        }
+
+        @media (min-width: 768px) {
+            .bd-placeholder-img-lg {
+                font-size: 3.5rem;
+            }
+        }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="{{ asset('assets/css/carousel.css') }}" rel="stylesheet">
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+        <a class="navbar-brand" href="{{ path('home') }}">La Boutique E-Commerce</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarCollapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item active">
+                    <a class="nav-link" href="{{ path('products') }}">Nos produits</a>
+                </li>
+                <li>
+
+                </li>
+            </ul>
+            <div class="navbar-item-custom">
+                {% if app.user %}
+                <a href="{{ path('account') }}">Mon compte <small>({{ app.user.firstname }})</small></a> | <a href="{{ path('app_logout') }}">Déconnexion</a> 
+                {% else %}
+                <a href="{{ path('app_login') }}">Connexion</a> | <a href="{{ path('register') }}">Inscription</a> 
+                {% endif %}
+            </div>
+                            {% block widget %}
+                    <a id="cartdetails" data-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false" href="{{ path('cart') }}">
+                            <i class="fas fa-shopping-cart"></i>
+                    </a>
+                    <div aria-labelledby="cartdetails" class="dropdown-menu dropdown-menu-left p-4" style="margin-top:13px!important;">
+                        <div class="navbar-cart-product-wrapper">
+                            {% set total = null %}
+                            {% for item in cart.full %}
+                            
+                            <div class="navbar-cart-product">
+                                <div class="w-100">
+                                    <div class="row">   
+                                        <div class="col-md-12">
+                                            <a href="{{ path('product', { 'slug' : item.product.slug } ) }}" class="navbar-cart-product-link">
+                                                {# {{ dump(item.productDeclination) }} #} {# {{ item.product.name }} #} {# - {{ item.productDeclination.size.name }} #}</br>
+                                            </a>    
+                                        </div>
+                                        <div class="col-md-6 my-auto">
+                                            <img src="/uploads/{{ item.product.illustration }}" alt="{{ item.product.name }}" height="75px">
+                                        </div>
+                                        <div class="col-md-6">
+                                            {# {% for element in cart.full %} #}
+
+                                            {# {% endfor %} #}                                            
+                                            <small 
+                                                class="d-block text-sm">Prix unité : <strong>{{ (item.product.price / 100)|number_format(2, ',','.') }} € </strong>
+                                            </small>
+                                            <small
+                                                class="d-block text-muted">Quantité :  <strong>{{ item.quantity }} </strong>
+                                                <a href="{{ path('delete_to_cart', {'id' : item.product.id }) }}"></br>
+                                                    <img src="{{ asset('assets/img/delete.png') }}" height="12px" alt="Supprimer mon produit">
+                                                </a>
+                                                <a href="{{ path('decrease_to_cart', {'id' : item.product.id }) }}">
+                                                    <img src="{{ asset('assets/img/less.png') }}" height="8px" alt="Retirer un produit">
+                                                </a>
+                                                <a href="{{ path('add_to_cart', {'id' : item.product.id }) }}">
+                                                    <img src="{{ asset('assets/img/more.png') }}" height="8px" alt="Ajouter un produit">
+                                                </a>
+                                            </small>
+                                            <small >
+                                                Prix total :  <strong>{{ ((item.product.price * item.quantity) / 100)|number_format(2, ',','.') }} € </strong>
+                                            </small>
+                                        </div>
+                                    </div></br>
+                                </div>
+                            </div>
+                            {% set total = total + (item.product.price * item.quantity) %}
+                            {% endfor %}
+
+                            <div class="navbar-cart-total">
+                                <span class="text-uppercase text-muted btn btn-outline-test">Total commande : </br><strong class="text-uppercase">{{ (total / 100)|number_format(2, ',','.') }} € </span></strong>
+                            </div>
+
+                            <div class="d-flex justify-content-between lien-panier">
+                                <a href="{{ path('cart') }}" class="mr-3 btn btn-outline-dark"><small>Voir le panier </small><i class="fa-arrow-right fa"></i></a>
+                                <a href="{{ path('order') }}" class="btn btn-outline-dark"><small>Commander</small></a>
+                            </div>
+                    </div>
+                {% endblock %}
+            
+        </div>
+    </nav>
+</header>
+
+<main role="main">
+
+
+    <div class="container marketing {% if block('carousel') is not defined %}mt-5{% endif %}">{# si le block carousel n'est pas défini |mt-5 => margin-top 5px #}
+    
+{% block content %}
+{% endblock %}
+
+    </div><!-- /.container -->
+
+    <!-- FOOTER -->
+    <footer class="footer-custom">
+        {# <p class="float-right"><a href="#">Back to top</a></p> #}
+        <p>&copy; 2017-2020 La Boutique E-Commerce,</br>
+            <small>La Boutique 100% Symfony</br>
+                <a href="#">Privacy</a> &middot; <a href="#">Terms</a>
+            </small>
+        </p>
+    </footer>
+</main>
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="{{ asset('assets/js/bootstrap.bundle.js') }}"></script>
+</body>
+
+{% block script %}
+{% endblock %}
+
 </html>
