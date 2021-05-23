@@ -1,0 +1,11 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Accès non autorisé : Site E-commerce{% endblock %}
+
+{% block content %}
+    <div class="block-small">
+        <h2>Accès non autorisé</h2>
+        <p>Vous n'avez pas l'accès à cette page, veuillez contacter l'administrateur du site</p>
+        <a href="{{ path('home') }}" class="btn btn-info">Revenir à l'accueil</a>
+    </div>
+{% endblock %}
