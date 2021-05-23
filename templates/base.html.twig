@@ -8,12 +8,6 @@
     <meta name="generator" content="Jekyll v4.1.1">
     <title>{% block title %}La Boutique E-Commerce{% endblock %}</title>
 
-        {# <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script> #}
-        <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js" integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI" crossorigin="anonymous"></script>
-
-        <script src="https://kit.fontawesome.com/c8e4d183c2.js" crossorigin="anonymous"></script> {# using-FontAwesome-for-Icons #}
-
-
     <!-- Bootstrap core CSS -->
     <link href="{{ asset('assets/css/bootstrap.min.css') }}" rel="stylesheet"> {# {{ asset ('') }} => veut dire : va me chercher dans le dossier public #}
     <link rel="stylesheet" href="{{ asset('assets/css/e-commerce.css') }}">
@@ -50,9 +44,12 @@
                 <li class="nav-item active">
                     <a class="nav-link" href="{{ path('products') }}">Nos produits</a>
                 </li>
-                <li>
-
+                <li class="nav-item active">
+                    <a class="nav-link" href="#">Qui commes-nous ?</a>
                 </li>
+                {# <li class="nav-item active">
+                    <a class="nav-link" href="{{ path('contact') }}">Contact</a>
+                </li> #}
             </ul>
             <div class="navbar-item-custom">
                 {% if app.user %}
@@ -61,76 +58,85 @@
                 <a href="{{ path('app_login') }}">Connexion</a> | <a href="{{ path('register') }}">Inscription</a> 
                 {% endif %}
             </div>
-                {% block widget %}
-                    <a id="cartdetails" data-toggle="dropdown" aria-haspopup="true"
-                        aria-expanded="false" href="{{ path('cart') }}">
-                            <i class="fas fa-shopping-cart"></i>
-                    </a>
-                    <div aria-labelledby="cartdetails" class="dropdown-menu dropdown-menu-left p-4" style="margin-top:13px!important;">
-                        <div class="navbar-cart-product-wrapper">
-                            {% set total = null %}
-                            {% for item in cart.full %}
-                            
-                            <div class="navbar-cart-product">
-                                <div class="w-100">
-                                    <div class="row">   
-                                        <div class="col-md-12">
-                                            <a href="{{ path('product', { 'slug' : item.product.slug } ) }}" class="navbar-cart-product-link">
-                                                {# {{ dump(item.productDeclination) }} #} {# {{ item.product.name }} #} {# - {{ item.productDeclination.size.name }} #}</br>
-                                            </a>    
-                                        </div>
-                                        <div class="col-md-6 my-auto">
-                                            <img src="/uploads/{{ item.product.illustration }}" alt="{{ item.product.name }}" height="75px">
-                                        </div>
-                                        <div class="col-md-6">
-                                            {# {% for element in cart.full %} #}
+{#             <a href="{{ path('cart') }}">
+                <img src="{{ asset('assets/img/shopping-cart.png') }}" class="cart-icon" alt="Mon panier">
+            </a> #}
+{% block widget %}
+<!-- Cart Dropdown-->
+<div class="nav-item dropdown">
 
-                                            {# {% endfor %} #}                                            
-                                            <small 
-                                                class="d-block text-sm">Prix unité : <strong>{{ (item.product.price / 100)|number_format(2, ',','.') }} € </strong>
-                                            </small>
-                                            <small
-                                                class="d-block text-muted">Quantité :  <strong>{{ item.quantity }} </strong>
-                                                <a href="{{ path('delete_to_cart', {'id' : item.product.id }) }}"></br>
-                                                    <img src="{{ asset('assets/img/delete.png') }}" height="12px" alt="Supprimer mon produit">
-                                                </a>
-                                                <a href="{{ path('decrease_to_cart', {'id' : item.product.id }) }}">
-                                                    <img src="{{ asset('assets/img/less.png') }}" height="8px" alt="Retirer un produit">
-                                                </a>
-                                                <a href="{{ path('add_to_cart', {'id' : item.product.id }) }}">
-                                                    <img src="{{ asset('assets/img/more.png') }}" height="8px" alt="Ajouter un produit">
-                                                </a>
-                                            </small>
-                                            <small >
-                                                Prix total :  <strong>{{ ((item.product.price * item.quantity) / 100)|number_format(2, ',','.') }} € </strong>
-                                            </small>
-                                        </div>
-                                    </div></br>
-                                </div>
+    <div class="d-none d-lg-block">
+      <a id="cartdetails" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" href="{{ path('cart') }}">
+                <img src="{{ asset('assets/img/shopping-cart.png') }}" class="cart-icon" alt="Mon panier"></a>
+        <span class="badge badge-secondary">{# {{ item.quantity }} #}</span>
+      </a>
+        <div aria-labelledby="cartdetails" class="dropdown-menu dropdown-menu-right p-4">
+            <div class="navbar-cart-product-wrapper">
+            {% set total = null %}
+                {% for item in cart.full %}
+                <!-- cart item-->
+                <div class="navbar-cart-product">
+                    <div class="w-100">
+                        <div class="row">   
+                            <div class="col-md-12">
+                                <a href="{{ path('product', { 'slug' : item.product.slug } ) }}" class="navbar-cart-product-link">
+                                    {{ item.product.name }}</br>
+                                </a>    
                             </div>
-                            {% set total = total + (item.product.price * item.quantity) %}
-                            {% endfor %}
-
-                            <div class="navbar-cart-total">
-                                <span class="text-uppercase text-muted btn btn-outline-test">Total commande : </br><strong class="text-uppercase">{{ (total / 100)|number_format(2, ',','.') }} € </span></strong>
+                            <div class="col-md-6 my-auto">
+                                <img src="/uploads/{{ item.product.illustration }}" alt="{{ item.product.name }}" height="75px">
+                            </div>
+                            <div class="col-md-6">
+                                <small 
+                                    class="d-block text-sm">Prix unité : <strong>{{ (item.product.price / 100)|number_format(2, ',','.') }} € </strong>
+                                </small>
+                                <small
+                                    class="d-block text-muted">Quantité :  <strong>{{ item.quantity }} </strong>
+                                    <a href="{{ path('delete_to_cart', {'id' : item.product.id }) }}">
+                                        <img src="{{ asset('assets/img/delete.png') }}" height="12px" alt="Supprimer mon produit">
+                                    </a>
+                                    <a href="{{ path('decrease_to_cart', {'id' : item.product.id }) }}">
+                                        <img src="{{ asset('assets/img/less.png') }}" height="8px" alt="Retirer un produit">
+                                    </a>
+                                    <a href="{{ path('add_to_cart', {'id' : item.product.id }) }}">
+                                        <img src="{{ asset('assets/img/more.png') }}" height="8px" alt="Ajouter un produit">
+                                    </a>
+                                </small>
+                                <small >
+                                    Prix total :  <strong>{{ ((item.product.price * item.quantity) / 100)|number_format(2, ',','.') }} € </strong>
+                                </small>
                             </div>
 
-                            <div class="d-flex justify-content-between lien-panier">
-                                <a href="{{ path('cart') }}" class="mr-3 btn btn-outline-dark"><small>Voir le panier </small><i class="fa-arrow-right fa"></i></a>
-                                <a href="{{ path('order') }}" class="btn btn-outline-dark"><small>Commander</small></a>
-                            </div>
+                        </div></br>
                     </div>
-                {% endblock %}
+                </div>
+                {% set total = total + (item.product.price * item.quantity) %}
+                {% endfor %}
+
+                <div class="navbar-cart-total">
+                    <span class="text-uppercase text-muted btn btn-outline-test">Total commande : <strong class="text-uppercase">{{ (total / 100)|number_format(2, ',','.') }} € </span></strong>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                <a href="{{ path('cart') }}" class="mr-3 btn btn-outline-dark">Voir le panier <i class="fa-arrow-right fa"></i></a>
+                <a href="#" class="btn btn-outline-dark">Commander</a>
+                </div>
+            </div>{# navbar-cart-product-wrapper #}
+        </div>{# dropdown-menu dropdown-menu-right p-4 #}
+    </div>{# d-none d-lg-block #}
+</div> {# nav-item dropdown #}
+{# {% endfor %} #}
+            {# 
             
+             #}
+{% endblock %}
         </div>
     </nav>
 </header>
 
 <main role="main">
 
-
-    <div class="container marketing {% if block('carousel') is not defined %}mt-5{% endif %}">{# si le block carousel n'est pas défini |mt-5 => margin-top 5px #}
-    
 {% block content %}
 {% endblock %}
 
